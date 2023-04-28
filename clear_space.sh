@@ -35,3 +35,6 @@ rm -rf ~/.cache/*
 echo "Cache size after"
 du -sh ~/.cache/
 rm -rf ~/.cache/
+
+echo "Clearing old kernel config files..."
+sudo apt-get remove --purge $(dpkg -l | awk '/^rc/{print $2}')
