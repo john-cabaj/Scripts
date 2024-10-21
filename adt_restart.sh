@@ -11,7 +11,6 @@ function adt_query_state {
 
 function adt_retrigger {
     URL=$1
-	BROWSER_CMD=$2
 
     link=
     package=
@@ -31,19 +30,17 @@ function adt_retrigger {
 
     rmadison $package | grep $release | tail -1 | sed 's;|;;g' | while read p version rest_of_the_line
     do
-        CMD="$BROWSER_CMD '$link&trigger=$p%2F$version'"
-        echo $CMD
+        CMD="xdg-open '$link&trigger=$p%2F$version' > /dev/null 2>&1"
         echo $CMD | $SHELL
     done
 }
 
 STATE=${1^^}
 URL=$2
-BROWSER_CMD=$3
 
-if [ -z "$STATE" ] || [ -z "$URL" ] || [ -z "$BROWSER_CMD" ]; then
-	echo "Usage: $0 <state> <retry-url> <browser-cmd>" 1>&2
+if [ -z "$STATE" ] || [ -z "$URL" ]; then
+	echo "Usage: $0 <state> <retry-url>" 1>&2
 	exit 1
 fi
 
-adt_query_state $STATE $URL | while read u; do adt_retrigger "$u" $BROWSER_CMD; done
+adt_query_state $STATE $URL | while read u; do adt_retrigger "$u"; done
